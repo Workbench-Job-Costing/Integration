@@ -1,7 +1,7 @@
 # Power Apps
 Workbench PowerApp proof of concepts.
 
-##Prerequisites
+## Prerequisites
 Office 365 Business Account (Power App available for business accounts only)
 Web Workbench instance or you can use our sandbox solution.
 
