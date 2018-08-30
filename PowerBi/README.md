@@ -16,7 +16,7 @@ Retrieve a list of companies from Workbench API.
 5. See the updated list of companies
 
 ## Company List with pagination PowerBI
-Retrieve a list of Suppliers only from Workbench API. This is a bit more complex example where you can see how to apply a filter criteria, and get the paginated data from the workbonch API. 
+Retrieve a list of Suppliers only from Workbench API. This is a bit more complex example where you can see how to apply filter criteria, and get the paginated data from the Workbench API. 
 
 
 
