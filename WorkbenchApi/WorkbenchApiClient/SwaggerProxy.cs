@@ -278,7 +278,7 @@ namespace WorkbenchApiClient.Swagger {
     }
     public interface IJobMaintenanceApiWebProxy
     {
-        Task<JobMaintenanceApiModel> Get(string jobCode = null);
+        Task<JobMaintenanceApiModel> Get(string jobCode = null, string jobDescription = null);
         Task<JobMaintenanceApiModel> Post(JobMaintenanceApiModel model);
         Task<JobMaintenanceApiModel> Delete(JobsMaintenanceKey key);
     }
@@ -305,7 +305,7 @@ namespace WorkbenchApiClient.Swagger {
     }
     public interface ILogServiceAgreementApiWebProxy
     {
-        Task<LogServiceAgreementApiKey> Put(int? serviceAgreementID = null, string serviceAgreementCode = null, string orderNo = null);
+        Task<LogServiceAgreementApiKey> Put(int? serviceAgreementID = null, string serviceAgreementCode = null, string orderNo = null, string description = null, int? allocatedPersonId = null, int? assetID = null);
     }
     public interface IPeopleDetailApiWebProxy
     {
@@ -327,7 +327,7 @@ namespace WorkbenchApiClient.Swagger {
     }
     public interface IPurchaseOrderDefaultsApiWebProxy
     {
-        Task<PurchaseOrdersDetailLine> Get(int? purchaseOrderLineId = null, int? purchaserId = null, string finCoCode = null, string jobCode = null, int? lineCode = null, string activityCode = null, string workCentreCode = null, string gstTypeCode = null);
+        Task<PurchaseOrdersDetailLine> Get(string keyName = null, int? purchaseOrderLineId = null, int? purchaserId = null, string finCoCode = null, string jobCode = null, int? lineCode = null, string activityCode = null, string workCentreCode = null, string gstTypeCode = null);
     }
     public interface IPurchaseOrderDetailApiWebProxy
     {
@@ -443,7 +443,7 @@ namespace WorkbenchApiClient.Swagger {
     }
     public interface ITimesheetDetailApiWebProxy
     {
-        Task<TimesheetApiModel> Get(int? personId = null, DateTime? timesheetDate = null, TimesheetDetailApiWebProxy.GetfunctionalCode functionalCode = TimesheetDetailApiWebProxy.GetfunctionalCode.General);
+        Task<TimesheetApiModel> Get(int? personId = null, DateTime? timesheetDate = null);
         Task<TimesheetApiModel> Post(TimesheetApiModel model);
         Task<TimesheetApiModel> Delete(TimesheetApiKey key);
     }
@@ -2820,12 +2820,16 @@ namespace WorkbenchApiClient.Swagger {
         ///
         /// </summary>
         /// <param name="jobCode"></param>
-        public async Task<JobMaintenanceApiModel> Get(string jobCode = null)
+        /// <param name="jobDescription"></param>
+        public async Task<JobMaintenanceApiModel> Get(string jobCode = null, string jobDescription = null)
         {
             var url = "api/JobMaintenanceApi"
             ;
             if (jobCode != null){
                 url = AppendQuery(url, "jobCode", jobCode.ToString());
+            }
+            if (jobDescription != null){
+                url = AppendQuery(url, "jobDescription", jobDescription.ToString());
             }
 
             using (var client = BuildHttpClient())
@@ -3385,7 +3389,10 @@ namespace WorkbenchApiClient.Swagger {
         /// <param name="serviceAgreementID"></param>
         /// <param name="serviceAgreementCode"></param>
         /// <param name="orderNo"></param>
-        public async Task<LogServiceAgreementApiKey> Put(int? serviceAgreementID = null, string serviceAgreementCode = null, string orderNo = null)
+        /// <param name="description"></param>
+        /// <param name="allocatedPersonId"></param>
+        /// <param name="assetID"></param>
+        public async Task<LogServiceAgreementApiKey> Put(int? serviceAgreementID = null, string serviceAgreementCode = null, string orderNo = null, string description = null, int? allocatedPersonId = null, int? assetID = null)
         {
             var url = "api/LogServiceAgreementApi"
             ;
@@ -3397,6 +3404,15 @@ namespace WorkbenchApiClient.Swagger {
             }
             if (orderNo != null){
                 url = AppendQuery(url, "orderNo", orderNo.ToString());
+            }
+            if (description != null){
+                url = AppendQuery(url, "description", description.ToString());
+            }
+            if (allocatedPersonId.HasValue){
+                url = AppendQuery(url, "allocatedPersonId", allocatedPersonId.ToString());
+            }
+            if (assetID.HasValue){
+                url = AppendQuery(url, "assetID", assetID.ToString());
             }
 
             using (var client = BuildHttpClient())
@@ -3743,6 +3759,7 @@ namespace WorkbenchApiClient.Swagger {
         /// <summary>
         ///
         /// </summary>
+        /// <param name="keyName"></param>
         /// <param name="purchaseOrderLineId"></param>
         /// <param name="purchaserId"></param>
         /// <param name="finCoCode"></param>
@@ -3751,10 +3768,13 @@ namespace WorkbenchApiClient.Swagger {
         /// <param name="activityCode"></param>
         /// <param name="workCentreCode"></param>
         /// <param name="gstTypeCode"></param>
-        public async Task<PurchaseOrdersDetailLine> Get(int? purchaseOrderLineId = null, int? purchaserId = null, string finCoCode = null, string jobCode = null, int? lineCode = null, string activityCode = null, string workCentreCode = null, string gstTypeCode = null)
+        public async Task<PurchaseOrdersDetailLine> Get(string keyName = null, int? purchaseOrderLineId = null, int? purchaserId = null, string finCoCode = null, string jobCode = null, int? lineCode = null, string activityCode = null, string workCentreCode = null, string gstTypeCode = null)
         {
             var url = "api/PurchaseOrderDefaultsApi"
             ;
+            if (keyName != null){
+                url = AppendQuery(url, "keyName", keyName.ToString());
+            }
             if (purchaseOrderLineId.HasValue){
                 url = AppendQuery(url, "purchaseOrderLineId", purchaseOrderLineId.ToString());
             }
@@ -6151,8 +6171,7 @@ namespace WorkbenchApiClient.Swagger {
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="timesheetDate"></param>
-        /// <param name="functionalCode"></param>
-        public async Task<TimesheetApiModel> Get(int? personId = null, DateTime? timesheetDate = null, GetfunctionalCode functionalCode = GetfunctionalCode.General)
+        public async Task<TimesheetApiModel> Get(int? personId = null, DateTime? timesheetDate = null)
         {
             var url = "api/TimesheetDetailApi"
             ;
@@ -6162,7 +6181,6 @@ namespace WorkbenchApiClient.Swagger {
             if (timesheetDate != null){
                 url = AppendQuery(url, "timesheetDate", timesheetDate.ToString());
             }
-            url = AppendQuery(url, "functionalCode", functionalCode.ToString());
 
             using (var client = BuildHttpClient())
             {
@@ -6279,81 +6297,6 @@ namespace WorkbenchApiClient.Swagger {
                 return output.Body;
 
             }
-        }
-
-        public enum GetfunctionalCode
-        {
-            General,
-            PurchaseOrders,
-            PurchaseOrderApproval,
-            PurchaseRequisitions,
-            Timesheets,
-            TimesheetReviews,
-            TimesheetApproval,
-            TimesheetApprovalList,
-            ServiceLog,
-            ServiceDesk,
-            ExpenseClaims,
-            ExpenseClaimReviews,
-            ExpenseClaimApproval,
-            ExpenseClaimAdminApproval,
-            TabletTimesheet,
-            TabletTimePlant,
-            Scheduler,
-            LeaveManagement,
-            LeaveTypeManagement,
-            CrewTimesheets,
-            Refueling,
-            HumanResources,
-            DailyDiary,
-            Datasheets,
-            CreditCards,
-            Stock,
-            LogDaysheet,
-            PortalPeople,
-            PortalCompany,
-            Workflow,
-            Reporting,
-            ProfitCentres,
-            ExternalSalesCodes,
-            InternalSalesCodes,
-            ActivityReportCode,
-            ProfitCentreReportCode,
-            SalesCodeReportCode,
-            Batch,
-            Budget,
-            Billing,
-            TimeCodes,
-            Disbursement,
-            Jobs,
-            ApInvoices,
-            Adjustments,
-            Plant,
-            NonStockLocation,
-            JobContract,
-            Processes,
-            JobReceipt,
-            Forecast,
-            SubContracts,
-            WorkOrderApproval,
-            StockItem,
-            ApInvoiceApproval,
-            ApCreditApproval,
-            TimesheetAdminApproval,
-            DocketEntry,
-            Revenue,
-            Vouchers,
-            VoucherApproval,
-            Quotes,
-            ProductionMeasures,
-            StockIssue,
-            Utilities,
-            SubcontractClaimWorkflowApproval,
-            BulkInvoice,
-            WorkOrder,
-            Activities,
-            SalesCodes,
-            ContractorDaysheet,
         }
 
     }
@@ -6725,9 +6668,12 @@ namespace WorkbenchApiClient.Swagger {
             SubcontractClaimWorkflowApproval,
             BulkInvoice,
             WorkOrder,
+            DocumentRegister,
             Activities,
             SalesCodes,
             ContractorDaysheet,
+            Materials,
+            ExternalPlant,
         }
 
     }
@@ -6815,11 +6761,6 @@ namespace WorkbenchApiClient.Swagger {
         public AdminActivityKey CurrentKey { get; set; }
         public AdminActivityKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class Tuple_String
@@ -6864,11 +6805,6 @@ namespace WorkbenchApiClient.Swagger {
         public LookupsLookupKey CurrentKey { get; set; }
         public LookupsLookupKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class LookupsLookupKey
@@ -6910,12 +6846,6 @@ namespace WorkbenchApiClient.Swagger {
         public string Details { get; set; }
         public string FileName { get; set; }
         public string Url { get; set; }
-        public string successMessage { get; set; }
-        public string warningMessage { get; set; }
-        public string errorMessage { get; set; }
-        public List<MvcValidationError> validationErrors { get; set; }
-        public object form { get; set; }
-        public object grid { get; set; }
         public string KeyStr { get; set; }
         public DateTime KeyDate { get; set; }
         public int KeyInt { get; set; }
@@ -6924,10 +6854,7 @@ namespace WorkbenchApiClient.Swagger {
     public class APInvoiceApiModel
     {
         public APProcessingAPInvoiceKey Key { get; set; }
-        public BoolViewData IncludeRelatedCredits { get; set; }
-        public DropdownViewData ShowAmountAs { get; set; }
         public APProcessingAPInvoiceDialogHeader DialogHeader { get; set; }
-        public APProcessingPOConfirmationDialog POConfirmationHeader { get; set; }
         public APProcessingAPInvoiceDialogGrid JobTransactions { get; set; }
         public APProcessingPOConfirmationDialogGrid POLines { get; set; }
     }
@@ -6935,25 +6862,6 @@ namespace WorkbenchApiClient.Swagger {
     public class JobTransactionsJobTransactionLine
     {
         public DateTime TranDate { get; set; }
-        public string JobCode { get; set; }
-        public string ActivityCode { get; set; }
-        public string WorkCentreCode { get; set; }
-        public double Quantity { get; set; }
-        public double Cost { get; set; }
-        public string GSTType { get; set; }
-        public string GSTTypeDescription { get; set; }
-        public double GST { get; set; }
-        public double GSTRate { get; set; }
-        public double NetValue { get; set; }
-        public double Retail { get; set; }
-        public string Reference { get; set; }
-        public string LineDescription { get; set; }
-        public string Details { get; set; }
-        public int FromPONumber { get; set; }
-        public string StockLocationCode { get; set; }
-        public string StockItemCode { get; set; }
-        public double TotalLineCost { get; set; }
-        public double CostRate { get; set; }
         public int EnteredByID { get; set; }
         public int SourceID { get; set; }
         public CellData JobCodeValue { get; set; }
@@ -6982,11 +6890,6 @@ namespace WorkbenchApiClient.Swagger {
         public JobTransactionsJobTransactionDetailKey CurrentKey { get; set; }
         public JobTransactionsJobTransactionDetailKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class MvcValidationError
@@ -7005,39 +6908,16 @@ namespace WorkbenchApiClient.Swagger {
         public bool BoolValue { get; set; }
         public string Name { get; set; }
         public bool Visible { get; set; }
-        public bool Disabled { get; set; }
-        public bool Required { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class DropdownViewData
     {
         public string SelectedValue { get; set; }
         public string SelectedText { get; set; }
-        public bool IsEmail { get; set; }
-        public PickerViewDataAddon PickerViewDataAddon { get; set; }
-        public bool Mismatch { get; set; }
         public string Name { get; set; }
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public bool DisableChange { get; set; }
-        public bool NoDirty { get; set; }
-        public ControlSizeValues ControlSize { get; set; }
-        public FontStyleValues FontStyle { get; set; }
-        public enum ControlSizeValues
-        {
-            None,
-            Small,
-        }
-
-        public enum FontStyleValues
-        {
-            None,
-            Bold,
-            Italic,
-        }
-
     }
 
     public class APProcessingAPInvoiceDialogHeader
@@ -7049,6 +6929,7 @@ namespace WorkbenchApiClient.Swagger {
         public DateViewData InvoiceDate { get; set; }
         public DateViewData PaymentDate { get; set; }
         public StringViewData Currency { get; set; }
+        public PickerViewData EditableCurrency { get; set; }
         public DecimalViewData Rate { get; set; }
         public StringViewData BatchNo { get; set; }
         public StringViewData Period { get; set; }
@@ -7068,16 +6949,8 @@ namespace WorkbenchApiClient.Swagger {
         public StringViewData FinancialCompanyCode { get; set; }
         public StringViewData FinancialCompany { get; set; }
         public int DataImportId { get; set; }
-        public bool IsVoucherSourced { get; set; }
-        public bool CanEdit { get; set; }
-        public bool CanReview { get; set; }
-        public bool CanApprove { get; set; }
-        public bool CanUnapprove { get; set; }
-        public bool CanDelete { get; set; }
-        public bool CanPrint { get; set; }
         public bool IsNew { get; set; }
-        public bool IsUpdated { get; set; }
-        public double DefaultGstRate { get; set; }
+        public string PoCurrencyCode { get; set; }
     }
 
     public class APProcessingPOConfirmationDialog
@@ -7095,7 +6968,6 @@ namespace WorkbenchApiClient.Swagger {
 
     public class APProcessingAPInvoiceDialogGrid
     {
-        public Layout Layout { get; set; }
         public List<JobTransactionsJobTransactionLine> Rows { get; set; }
     }
 
@@ -7123,111 +6995,32 @@ namespace WorkbenchApiClient.Swagger {
         public bool DocketDerivedLine { get; set; }
     }
 
+    public class FieldViewDataAddon
+    {
+        public string NgClick { get; set; }
+        public string NgDisabled { get; set; }
+        public string NgHide { get; set; }
+        public string Icon { get; set; }
+        public string Title { get; set; }
+    }
+
     public class KeyValuePair
     {
         public string Key { get; set; }
         public string Value { get; set; }
     }
 
-    public class PickerViewDataAddon
-    {
-        public string NgClick { get; set; }
-        public string NgDisabled { get; set; }
-        public string Icon { get; set; }
-        public string Title { get; set; }
-    }
-
     public class LinkViewData
     {
-        public string HRef { get; set; }
-        public string OnClick { get; set; }
-        public FieldTypeValues FieldType { get; set; }
-        public bool AjaxButton { get; set; }
-        public string Badge { get; set; }
-        public object Attributes { get; set; }
-        public string Area { get; set; }
-        public string DialogAction { get; set; }
-        public string DialogController { get; set; }
-        public PickerUri DirectLink { get; set; }
-        public string Name { get; set; }
-        public string Prefix { get; set; }
-        public string CssClass { get; set; }
-        public bool Visible { get; set; }
-        public bool Disabled { get; set; }
-        public string FieldTypeValue { get; set; }
-        public string FormId { get; set; }
-        public int Width { get; set; }
-        public bool Required { get; set; }
-        public int TabIndex { get; set; }
-        public string LabelTitle { get; set; }
-        public string Tag { get; set; }
-        public int CustomFieldColumnSize { get; set; }
-        public bool RenderFieldOnly { get; set; }
-        public string Placeholder { get; set; }
-        public bool DisableChange { get; set; }
-        public bool NoDirty { get; set; }
-        public ControlSizeValues ControlSize { get; set; }
-        public FontStyleValues FontStyle { get; set; }
-        public enum FieldTypeValues
-        {
-            None,
-            TextBox,
-            DecimalText,
-            CheckBox,
-            Link,
-            SplitButton,
-            Button,
-            Label,
-            DateTime,
-            Picker,
-            PeriodEnd,
-            Discussion,
-            Spacer,
-            Time,
-            MenuButton,
-            FilePicker,
-            Radio,
-            FileAttachments,
-            TextAreaWithNote,
-            Location,
-            Section,
-            Subsection,
-            Question,
-            Signature,
-            ExtensionFields,
-            Tabs,
-            CronScheduler,
-            Collapsible,
-            StandardText,
-            HtmlBox,
-            Table,
-        }
-
-        public enum ControlSizeValues
-        {
-            None,
-            Small,
-        }
-
-        public enum FontStyleValues
-        {
-            None,
-            Bold,
-            Italic,
-        }
-
     }
 
     public class StringViewData
     {
         public string StringValue { get; set; }
-        public bool IsEmail { get; set; }
-        public bool RightAlign { get; set; }
         public string Name { get; set; }
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class DateViewData
@@ -7237,23 +7030,6 @@ namespace WorkbenchApiClient.Swagger {
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public bool NoDirty { get; set; }
-    }
-
-    public class DecimalViewData
-    {
-        public double DecimalValue { get; set; }
-        public double MinValue { get; set; }
-        public double MaxValue { get; set; }
-        public double Step { get; set; }
-        public bool RightAlign { get; set; }
-        public int DecimalPlaces { get; set; }
-        public bool HideSpinner { get; set; }
-        public string Name { get; set; }
-        public bool Visible { get; set; }
-        public bool Disabled { get; set; }
-        public bool Required { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class PickerViewData
@@ -7261,73 +7037,26 @@ namespace WorkbenchApiClient.Swagger {
         public string SelectedValue { get; set; }
         public string SelectedText { get; set; }
         public bool IsEmail { get; set; }
-        public PickerViewDataAddon PickerViewDataAddon { get; set; }
         public bool Mismatch { get; set; }
         public string Name { get; set; }
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public bool NoDirty { get; set; }
+    }
+
+    public class DecimalViewData
+    {
+        public double DecimalValue { get; set; }
+        public string Name { get; set; }
+        public bool Visible { get; set; }
     }
 
     public class StandardTextViewData
     {
-        public RenderCodeValues RenderCode { get; set; }
-        public TextCodeValues TextCode { get; set; }
-        public int KeyInt { get; set; }
-        public string KeyStr { get; set; }
-        public int Rows { get; set; }
-        public bool Readonly { get; set; }
-        public string Name1 { get; set; }
-        public string Name2 { get; set; }
-        public string Name3 { get; set; }
-        public string Name4 { get; set; }
-        public string Name5 { get; set; }
-        public string Label1 { get; set; }
-        public string Label2 { get; set; }
-        public string Label3 { get; set; }
-        public string Label4 { get; set; }
-        public string Label5 { get; set; }
-        public string Html1 { get; set; }
-        public string Html2 { get; set; }
-        public string Html3 { get; set; }
-        public string Html4 { get; set; }
-        public string Html5 { get; set; }
-        public string Image1 { get; set; }
-        public string Image2 { get; set; }
-        public string Image3 { get; set; }
-        public string Image4 { get; set; }
-        public string Image5 { get; set; }
-        public List<CodeDescription> Templates1 { get; set; }
-        public List<CodeDescription> Templates2 { get; set; }
-        public List<CodeDescription> Templates3 { get; set; }
-        public List<CodeDescription> Templates4 { get; set; }
-        public List<CodeDescription> Templates5 { get; set; }
         public string Name { get; set; }
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
-        public enum RenderCodeValues
-        {
-            None,
-            Button,
-            Inline,
-        }
-
-        public enum TextCodeValues
-        {
-            None,
-            PurchaseOrder,
-            WorkOrder,
-            APInvoice,
-            APCredit,
-            JobSalesCredit,
-            JobSalesInvoice,
-            Quote,
-        }
-
     }
 
     public class Layout
@@ -7337,24 +7066,6 @@ namespace WorkbenchApiClient.Swagger {
 
     public class APProcessingPOConfirmationLine
     {
-        public string JobCode { get; set; }
-        public string WorkCentreCode { get; set; }
-        public string LineDescription { get; set; }
-        public string Details { get; set; }
-        public double UnitRate { get; set; }
-        public double OrderQuantity { get; set; }
-        public double FCOrderCost { get; set; }
-        public double ReceivedQuantity { get; set; }
-        public double ReceivedValue { get; set; }
-        public double FCUnitCost { get; set; }
-        public double ThisQuantity { get; set; }
-        public double ThisValue { get; set; }
-        public double OutstandingQuantity { get; set; }
-        public double OutstandingValue { get; set; }
-        public double RemainingQuantity { get; set; }
-        public double RemainingValue { get; set; }
-        public double ReceiptedQuantity { get; set; }
-        public double ReceiptedValue { get; set; }
         public bool LineCompleted { get; set; }
         public CellData JobCodeValue { get; set; }
         public CellData WorkCentreCodeValue { get; set; }
@@ -7382,16 +7093,10 @@ namespace WorkbenchApiClient.Swagger {
         public APProcessingPOConfirmationKey CurrentKey { get; set; }
         public APProcessingPOConfirmationKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class PickerUri
     {
-        public object RouteValues { get; set; }
     }
 
     public class CodeDescription
@@ -7407,9 +7112,6 @@ namespace WorkbenchApiClient.Swagger {
     {
         public string GridId { get; set; }
         public List<ColModel> ColModel { get; set; }
-        public PickerUri ExportExcelUri { get; set; }
-        public bool LoadFilters { get; set; }
-        public bool HideHeaders { get; set; }
     }
 
     public class APProcessingPOConfirmationKey
@@ -7424,310 +7126,41 @@ namespace WorkbenchApiClient.Swagger {
         public string Name { get; set; }
         public string Title { get; set; }
         public string Index { get; set; }
-        public string GroupName { get; set; }
-        public bool Grouping { get; set; }
         public bool Hidden { get; set; }
         public bool Editable { get; set; }
         public bool IsNumeric { get; set; }
-        public bool HighlightNegative { get; set; }
-        public string Classes { get; set; }
-        public int DecimalPlaces { get; set; }
-        public AlignValues Align { get; set; }
-        public TextNotePositionValues TextNotePosition { get; set; }
-        public enum AlignValues
-        {
-            None,
-            Left,
-            Right,
-            Center,
-        }
-
-        public enum TextNotePositionValues
-        {
-            Left,
-            Right,
-        }
-
     }
 
     public class FooterModel
     {
-        public object ViewData { get; set; }
-        public SqlDbTypeValues SqlDbType { get; set; }
-        public bool Editable { get; set; }
-        public TotalFunctionValues TotalFunction { get; set; }
-        public FormatterValues Formatter { get; set; }
-        public string Label { get; set; }
-        public bool LabelRightAlign { get; set; }
-        public int LabelPosition { get; set; }
-        public string Name { get; set; }
-        public string Style { get; set; }
-        public ExtraQuery SelectQuery { get; set; }
-        public ExtraQuery UpdateQuery { get; set; }
-        public bool Hidden { get; set; }
-        public bool RowTotal { get; set; }
-        public List<string> SkippedFields { get; set; }
-        public bool IsCustomLayout { get; set; }
-        public List<CustomFooterLayout> CustomFooterLayout { get; set; }
-        public enum SqlDbTypeValues
-        {
-            BigInt,
-            Binary,
-            Bit,
-            Char,
-            DateTime,
-            Decimal,
-            Float,
-            Image,
-            Int,
-            Money,
-            NChar,
-            NText,
-            NVarChar,
-            Real,
-            UniqueIdentifier,
-            SmallDateTime,
-            SmallInt,
-            SmallMoney,
-            Text,
-            Timestamp,
-            TinyInt,
-            VarBinary,
-            VarChar,
-            Variant,
-            Xml,
-            Udt,
-            Structured,
-            Date,
-            Time,
-            DateTime2,
-            DateTimeOffset,
-        }
-
-        public enum TotalFunctionValues
-        {
-            None,
-            Row,
-            RowCustom,
-            Column,
-            ColumnPartitioned,
-            Variance,
-            VariancePartitioned,
-            ColumnTime,
-            ColumnKms,
-            ColumnOther,
-            ColumnRadio,
-            ColumnPartitionedTime,
-            ColumnPartitionedKms,
-            ColumnPartitionedOther,
-            ColumnDisbursements,
-            ColumnReimbursements,
-            ColumnAllowance,
-            Attendance,
-            AttendanceVariance,
-        }
-
-        public enum FormatterValues
-        {
-            Number,
-            Label,
-            Header,
-            TextBox,
-            CheckBox,
-            CenteredLabel,
-            Boolean,
-        }
-
     }
 
     public class ColGroupingModel
     {
-        public bool UseColSpanStyle { get; set; }
-        public List<ColGroupHeader> GroupHeaders { get; set; }
     }
 
     public class PickerOptions
     {
-        public string Code { get; set; }
-        public ExtraQuery CellDataQuery { get; set; }
-        public object DataList { get; set; }
-        public List<KeyValuePair> DropdownList { get; set; }
-        public PickerUri DataUrl { get; set; }
-        public PickerUri DialogUrl { get; set; }
-        public PickerUri DropdownUrl { get; set; }
-        public int DropdownWidth { get; set; }
-        public string SelectedText { get; set; }
-        public string DialogTitle { get; set; }
-        public int MinChars { get; set; }
-        public string SelectedTextColumnName { get; set; }
-        public string SelectedValueColumnName { get; set; }
-        public FormatCodeValues FormatCode { get; set; }
-        public bool NoClean { get; set; }
-        public bool RequestDefaults { get; set; }
-        public bool FileAttachments { get; set; }
-        public string FileAttachmentsRelatedRecord { get; set; }
-        public string FileAttachmentsExtensions { get; set; }
-        public FileAttachmentsFunctionalCodeValues FileAttachmentsFunctionalCode { get; set; }
-        public string KeyStr { get; set; }
-        public int KeyInt { get; set; }
-        public bool ShowAutoDeleteOption { get; set; }
-        public enum FormatCodeValues
-        {
-            Default,
-            CodeValue,
-            Value,
-            ValueText,
-            Code,
-        }
-
-        public enum FileAttachmentsFunctionalCodeValues
-        {
-            General,
-            PurchaseOrders,
-            PurchaseOrderApproval,
-            PurchaseRequisitions,
-            Timesheets,
-            TimesheetReviews,
-            TimesheetApproval,
-            TimesheetApprovalList,
-            ServiceLog,
-            ServiceDesk,
-            ExpenseClaims,
-            ExpenseClaimReviews,
-            ExpenseClaimApproval,
-            ExpenseClaimAdminApproval,
-            TabletTimesheet,
-            TabletTimePlant,
-            Scheduler,
-            LeaveManagement,
-            LeaveTypeManagement,
-            CrewTimesheets,
-            Refueling,
-            HumanResources,
-            DailyDiary,
-            Datasheets,
-            CreditCards,
-            Stock,
-            LogDaysheet,
-            PortalPeople,
-            PortalCompany,
-            Workflow,
-            Reporting,
-            ProfitCentres,
-            ExternalSalesCodes,
-            InternalSalesCodes,
-            ActivityReportCode,
-            ProfitCentreReportCode,
-            SalesCodeReportCode,
-            Batch,
-            Budget,
-            Billing,
-            TimeCodes,
-            Disbursement,
-            Jobs,
-            ApInvoices,
-            Adjustments,
-            Plant,
-            NonStockLocation,
-            JobContract,
-            Processes,
-            JobReceipt,
-            Forecast,
-            SubContracts,
-            WorkOrderApproval,
-            StockItem,
-            ApInvoiceApproval,
-            ApCreditApproval,
-            TimesheetAdminApproval,
-            DocketEntry,
-            Revenue,
-            Vouchers,
-            VoucherApproval,
-            Quotes,
-            ProductionMeasures,
-            StockIssue,
-            Utilities,
-            SubcontractClaimWorkflowApproval,
-            BulkInvoice,
-            WorkOrder,
-            Activities,
-            SalesCodes,
-            ContractorDaysheet,
-        }
-
     }
 
     public class DialogOptions
     {
-        public PickerUri Uri { get; set; }
-        public string Title { get; set; }
-        public int Height { get; set; }
-        public int Width { get; set; }
-        public bool IsTabbed { get; set; }
-        public string DataWarning { get; set; }
-        public string Local { get; set; }
     }
 
     public class MenuOptions
     {
-        public List<MenuOptionItem> Items { get; set; }
     }
 
     public class ExtraQuery
     {
-        public SqlDbTypeValues SqlDbType { get; set; }
-        public string Name { get; set; }
-        public string Query { get; set; }
-        public bool IsQueryStored { get; set; }
-        public enum SqlDbTypeValues
-        {
-            BigInt,
-            Binary,
-            Bit,
-            Char,
-            DateTime,
-            Decimal,
-            Float,
-            Image,
-            Int,
-            Money,
-            NChar,
-            NText,
-            NVarChar,
-            Real,
-            UniqueIdentifier,
-            SmallDateTime,
-            SmallInt,
-            SmallMoney,
-            Text,
-            Timestamp,
-            TinyInt,
-            VarBinary,
-            VarChar,
-            Variant,
-            Xml,
-            Udt,
-            Structured,
-            Date,
-            Time,
-            DateTime2,
-            DateTimeOffset,
-        }
-
     }
 
     public class CustomFooterLayout
     {
-        public string Name { get; set; }
-        public bool IsTotalRowCol { get; set; }
-        public string PartitionKey { get; set; }
     }
 
     public class ColGroupHeader
     {
-        public string ColName { get; set; }
-        public string Title { get; set; }
-        public int Width { get; set; }
     }
 
     public class MenuOptionItem
@@ -7745,8 +7178,6 @@ namespace WorkbenchApiClient.Swagger {
         public string warningMessage { get; set; }
         public string errorMessage { get; set; }
         public List<MvcValidationError> validationErrors { get; set; }
-        public object form { get; set; }
-        public object grid { get; set; }
         public string KeyStr { get; set; }
         public DateTime KeyDate { get; set; }
         public int KeyInt { get; set; }
@@ -7765,33 +7196,10 @@ namespace WorkbenchApiClient.Swagger {
         public string InvoiceNumber { get; set; }
         public string CreditNumber { get; set; }
         public int SupplierId { get; set; }
-        public string Supplier { get; set; }
         public DateTime Date { get; set; }
         public string Type { get; set; }
         public string SubContractCode { get; set; }
-        public int BatchNo { get; set; }
-        public string BatchRef { get; set; }
         public string APStatus { get; set; }
-        public int AssignedApproverId { get; set; }
-        public string AssignedApprover { get; set; }
-        public int ApprovedById { get; set; }
-        public string ApprovedBy { get; set; }
-        public string Currency { get; set; }
-        public double Amount { get; set; }
-        public double ExGst { get; set; }
-        public double Gst { get; set; }
-        public double IncGst { get; set; }
-        public double TotalPayment { get; set; }
-        public double TotalCreditIncl { get; set; }
-        public double LastPayment { get; set; }
-        public int Year { get; set; }
-        public int Period { get; set; }
-        public int YearPeriodIndex { get; set; }
-        public DateTime PaymentDate { get; set; }
-        public string FinancialCompany { get; set; }
-        public int PONumber { get; set; }
-        public List<int> PONumberList { get; set; }
-        public List<string> JobCodes { get; set; }
         public CellData InvoiceNumberValue { get; set; }
         public CellData SupplierValue { get; set; }
         public DateTime DateValue { get; set; }
@@ -7817,11 +7225,6 @@ namespace WorkbenchApiClient.Swagger {
         public APProcessingAPInvoiceKey CurrentKey { get; set; }
         public APProcessingAPInvoiceKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class APInvoicePurchaseOrderApi
@@ -7884,29 +7287,6 @@ namespace WorkbenchApiClient.Swagger {
 
     public class SplitButtonViewData
     {
-        public string Default { get; set; }
-        public object Labels { get; set; }
-        public bool UseAttrDisable { get; set; }
-        public string Name { get; set; }
-        public bool Visible { get; set; }
-        public bool Disabled { get; set; }
-        public bool DisableChange { get; set; }
-        public bool NoDirty { get; set; }
-        public ControlSizeValues ControlSize { get; set; }
-        public FontStyleValues FontStyle { get; set; }
-        public enum ControlSizeValues
-        {
-            None,
-            Small,
-        }
-
-        public enum FontStyleValues
-        {
-            None,
-            Bold,
-            Italic,
-        }
-
     }
 
     public class FileAttachmentsViewData
@@ -7914,16 +7294,7 @@ namespace WorkbenchApiClient.Swagger {
         public string RelatedRecordID { get; set; }
         public string RelatedRecord { get; set; }
         public StringViewData FileUrl { get; set; }
-        public BoolViewData MarkAsAutoDelete { get; set; }
-        public bool EnableUploadOverride { get; set; }
-        public bool ForMobile { get; set; }
-        public bool EnableRelatedTab { get; set; }
-        public Layout RelatedLayout { get; set; }
-        public bool HideTitles { get; set; }
-        public PickerViewData EmailPicker { get; set; }
         public string Name { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class ButtonViewData
@@ -7932,7 +7303,6 @@ namespace WorkbenchApiClient.Swagger {
         public string Name { get; set; }
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class OptionsViewData
@@ -7943,8 +7313,6 @@ namespace WorkbenchApiClient.Swagger {
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class SystemBatchApiRequest
@@ -8039,11 +7407,6 @@ namespace WorkbenchApiClient.Swagger {
         public BatchBatchKey CurrentKey { get; set; }
         public BatchBatchKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class BatchBatchKey
@@ -8067,10 +7430,8 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralCompanyFinancialsFields Financials { get; set; }
         public CompanyApiGridLines_GeneralPersonLine People { get; set; }
         public CompanyApiGridLines_GeneralAttributeLine Attributes { get; set; }
-        public CompanyApiGridLines_GeneralCompanyInsuranceLine CompanyInsurance { get; set; }
         public CompanyApiGridLines_GeneralAddressLine Addresses { get; set; }
         public CompanyApiGridLines_GeneralNoteLine Notes { get; set; }
-        public CompanyApiGridLines_GeneralToDoLine ToDoItems { get; set; }
     }
 
     public class GeneralCompanyMainFields
@@ -8184,11 +7545,6 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralPersonKey CurrentKey { get; set; }
         public GeneralPersonKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
         public enum SelectIdValues
         {
             PersonId,
@@ -8218,11 +7574,6 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralAttributeKey CurrentKey { get; set; }
         public GeneralAttributeKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class GeneralCompanyInsuranceLine
@@ -8247,13 +7598,19 @@ namespace WorkbenchApiClient.Swagger {
         public CellData DescriptionValue { get; set; }
         public CellData DetailsValue { get; set; }
         public CellData Delete { get; set; }
+        public string id { get; set; }
         public string Status { get; set; }
+        public string OriginalId { get; set; }
+        public string CurrentId { get; set; }
         public int ReadonlyFlag { get; set; }
         public string ReadonlyMessage { get; set; }
+        public bool Changed { get; set; }
         public GeneralCompanyInsuranceKey OriginalKey { get; set; }
         public GeneralCompanyInsuranceKey CurrentKey { get; set; }
         public GeneralCompanyInsuranceKey Key { get; set; }
+        public bool IsNew { get; set; }
         public int Index { get; set; }
+        public bool Ignore { get; set; }
         public CellData Extra1 { get; set; }
         public CellData Extra2 { get; set; }
         public CellData Extra3 { get; set; }
@@ -8293,11 +7650,6 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralAddressKey CurrentKey { get; set; }
         public GeneralAddressKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class GeneralNoteLine
@@ -8327,11 +7679,6 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralNoteKey CurrentKey { get; set; }
         public GeneralNoteKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class GeneralToDoLine
@@ -8367,11 +7714,6 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralToDoKey CurrentKey { get; set; }
         public GeneralToDoKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class GeneralPersonKey
@@ -8389,6 +7731,8 @@ namespace WorkbenchApiClient.Swagger {
     {
         public int CompanyInsuranceId { get; set; }
         public int CompanyId { get; set; }
+        public string DialogId { get; set; }
+        public string GridId { get; set; }
     }
 
     public class GeneralAddressKey
@@ -8455,11 +7799,6 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralCompanyKey CurrentKey { get; set; }
         public GeneralCompanyKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class ControlParameterApiModel
@@ -8508,8 +7847,6 @@ namespace WorkbenchApiClient.Swagger {
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class GridResult_AdminImportHeaderLine
@@ -8534,11 +7871,6 @@ namespace WorkbenchApiClient.Swagger {
         public AdminImportHeaderKey CurrentKey { get; set; }
         public AdminImportHeaderKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class DatasheetsDatasheetKey
@@ -8580,8 +7912,6 @@ namespace WorkbenchApiClient.Swagger {
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
         public enum TypeValues
         {
             Boolean,
@@ -8596,6 +7926,8 @@ namespace WorkbenchApiClient.Swagger {
             PersonPicker,
             EmployeePicker,
             Time,
+            PlantItemPicker,
+            CompanyPicker,
         }
 
     }
@@ -8612,8 +7944,6 @@ namespace WorkbenchApiClient.Swagger {
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class HeaderColumnViewData
@@ -8632,6 +7962,7 @@ namespace WorkbenchApiClient.Swagger {
 
     public class DatasheetsDatasheetModelLine
     {
+        public CellData Datasheet { get; set; }
         public CellData Template { get; set; }
         public string Date { get; set; }
         public string Name { get; set; }
@@ -8647,11 +7978,6 @@ namespace WorkbenchApiClient.Swagger {
         public DatasheetsDatasheetKey CurrentKey { get; set; }
         public DatasheetsDatasheetKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class DatasheetsDialogFields
@@ -8695,11 +8021,6 @@ namespace WorkbenchApiClient.Swagger {
         public DatasheetsTemplateKey CurrentKey { get; set; }
         public DatasheetsTemplateKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class DatasheetsTemplateKey
@@ -8775,11 +8096,6 @@ namespace WorkbenchApiClient.Swagger {
         public BudgetBudgetLineKey CurrentKey { get; set; }
         public BudgetBudgetLineKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class GridResult_BudgetBudgetSubLine
@@ -8830,11 +8146,6 @@ namespace WorkbenchApiClient.Swagger {
         public BudgetBudgetSubLineKey CurrentKey { get; set; }
         public BudgetBudgetSubLineKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class BudgetBudgetSubLineKey
@@ -8896,11 +8207,6 @@ namespace WorkbenchApiClient.Swagger {
         public BudgetJobBudgetKey CurrentKey { get; set; }
         public BudgetJobBudgetKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class GeneralJobKey
@@ -8992,6 +8298,7 @@ namespace WorkbenchApiClient.Swagger {
         public int CompanyId { get; set; }
         public int Level { get; set; }
         public string ProfitCentre { get; set; }
+        public string ProfitCentreDescription { get; set; }
         public bool Finalised { get; set; }
         public string OpenClosed { get; set; }
         public int OpenClosedCode { get; set; }
@@ -9048,16 +8355,12 @@ namespace WorkbenchApiClient.Swagger {
         public GeneralJobKey CurrentKey { get; set; }
         public GeneralJobKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class JobsMaintenanceKey
     {
         public string JobCode { get; set; }
+        public string JobDescription { get; set; }
     }
 
     public class JobMaintenanceApiModel
@@ -9129,6 +8432,7 @@ namespace WorkbenchApiClient.Swagger {
         public PickerViewData BudgetActivityGroup { get; set; }
         public PickerViewData ForecastActivityGroup { get; set; }
         public PickerViewData BillingCurrency { get; set; }
+        public PickerViewData StockLocation { get; set; }
         public DropdownViewData CheckAgainstBudget { get; set; }
         public StringViewData JobDetails { get; set; }
         public BoolViewData UseGst { get; set; }
@@ -9213,11 +8517,6 @@ namespace WorkbenchApiClient.Swagger {
         public JobsJobGroupKey CurrentKey { get; set; }
         public JobsJobGroupKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class JobsJobWorkCentreLine
@@ -9226,6 +8525,7 @@ namespace WorkbenchApiClient.Swagger {
         public CellData WorkCentre { get; set; }
         public CellData Description { get; set; }
         public CellData BalanceOfBudget { get; set; }
+        public bool CashflowByActivity { get; set; }
         public bool Closed { get; set; }
         public bool Complete { get; set; }
         public DateTime StartDate { get; set; }
@@ -9238,11 +8538,6 @@ namespace WorkbenchApiClient.Swagger {
         public JobsJobWorkCentreKey CurrentKey { get; set; }
         public JobsJobWorkCentreKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class JobsJobScheduleLine
@@ -9257,11 +8552,6 @@ namespace WorkbenchApiClient.Swagger {
         public JobsJobScheduleKey CurrentKey { get; set; }
         public JobsJobScheduleKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class JobsDocketCostScheduleLine
@@ -9276,11 +8566,6 @@ namespace WorkbenchApiClient.Swagger {
         public JobsDocketCostScheduleKey CurrentKey { get; set; }
         public JobsDocketCostScheduleKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class JobsJobGroupKey
@@ -9441,6 +8726,7 @@ namespace WorkbenchApiClient.Swagger {
         public List<StoredFilesApiModel> StoredFiles { get; set; }
         public List<LogHeaderDetailsApiModel> LogDetails { get; set; }
         public List<LogHeaderAnalysisTransactionApiModel> AnalysisTransactions { get; set; }
+        public List<LogHeaderExtension> Extensions { get; set; }
     }
 
     public class LogHeaderPersonApiModel
@@ -9587,6 +8873,26 @@ namespace WorkbenchApiClient.Swagger {
         public bool UpdateFlag { get; set; }
     }
 
+    public class LogHeaderExtension
+    {
+        public string Name { get; set; }
+        public TypeValues Type { get; set; }
+        public string ValueStr { get; set; }
+        public int ValueInt { get; set; }
+        public bool ValueBool { get; set; }
+        public double ValueDec { get; set; }
+        public DateTime ValueDate { get; set; }
+        public enum TypeValues
+        {
+            String,
+            Int,
+            Bool,
+            Decimal,
+            DateTime,
+        }
+
+    }
+
     public class LogHeaderTaskApiModel
     {
         public int TaskID { get; set; }
@@ -9666,11 +8972,6 @@ namespace WorkbenchApiClient.Swagger {
         public ServiceDeskKey CurrentKey { get; set; }
         public ServiceDeskKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class ServiceDeskKey
@@ -9770,8 +9071,6 @@ namespace WorkbenchApiClient.Swagger {
         public bool Visible { get; set; }
         public bool Disabled { get; set; }
         public bool Required { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class ExtensionFieldsViewData
@@ -9782,8 +9081,6 @@ namespace WorkbenchApiClient.Swagger {
         public string Name { get; set; }
         public bool Visible { get; set; }
         public bool Required { get; set; }
-        public string Placeholder { get; set; }
-        public bool NoDirty { get; set; }
     }
 
     public class TabletTimesheetLine
@@ -9807,9 +9104,12 @@ namespace WorkbenchApiClient.Swagger {
         public CellData OutputMeasure { get; set; }
         public string ActivitySubType { get; set; }
         public List<Tuple_String> TimeCodes { get; set; }
+        public List<KeyValuePair> EmployeeProfiles { get; set; }
         public bool SubContractor { get; set; }
         public CellData PlantIssues { get; set; }
         public CellData DocketNo { get; set; }
+        public CellData EmployeeProfile { get; set; }
+        public CellData TimesheetBreaks { get; set; }
         public string Status { get; set; }
         public int ReadonlyFlag { get; set; }
         public string ReadonlyMessage { get; set; }
@@ -9817,11 +9117,6 @@ namespace WorkbenchApiClient.Swagger {
         public TabletTimesheetDetailKey CurrentKey { get; set; }
         public TabletTimesheetDetailKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class TabletJobOutputsLine
@@ -9844,11 +9139,6 @@ namespace WorkbenchApiClient.Swagger {
         public TabletJobOutputsKey CurrentKey { get; set; }
         public TabletJobOutputsKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class TabletMaterialLine
@@ -9876,11 +9166,6 @@ namespace WorkbenchApiClient.Swagger {
         public TabletMaterialDetailKey CurrentKey { get; set; }
         public TabletMaterialDetailKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class TabletPlantLine
@@ -9916,11 +9201,6 @@ namespace WorkbenchApiClient.Swagger {
         public TabletPlantDetailKey CurrentKey { get; set; }
         public TabletPlantDetailKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class WebEAVGridLine_WebEAVGridKey
@@ -9965,11 +9245,6 @@ namespace WorkbenchApiClient.Swagger {
         public WebEAVGridKey CurrentKey { get; set; }
         public WebEAVGridKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class TabletTimesheetDetailKey
@@ -9984,6 +9259,8 @@ namespace WorkbenchApiClient.Swagger {
         public string WorkCentreCode { get; set; }
         public string PersonCode { get; set; }
         public int TimesheetGroupID { get; set; }
+        public int ProfileID { get; set; }
+        public double BreakDuration { get; set; }
     }
 
     public class TabletJobOutputsKey
@@ -10038,6 +9315,9 @@ namespace WorkbenchApiClient.Swagger {
         public int ServiceAgreementID { get; set; }
         public string ServiceAgreementCode { get; set; }
         public string OrderNo { get; set; }
+        public string Description { get; set; }
+        public int AllocatedPersonId { get; set; }
+        public int AssetID { get; set; }
     }
 
     public class LogServiceAgreementApiKey
@@ -10046,6 +9326,7 @@ namespace WorkbenchApiClient.Swagger {
         public string ServiceAgreementCode { get; set; }
         public string OrderNo { get; set; }
         public int LogHeaderID { get; set; }
+        public int AssetID { get; set; }
     }
 
     public class PeopleApiModel
@@ -10130,6 +9411,8 @@ namespace WorkbenchApiClient.Swagger {
         public string Class { get; set; }
         public string SerialNo { get; set; }
         public bool Inactive { get; set; }
+        public string JobStatus { get; set; }
+        public string AssignmentOption { get; set; }
         public CellData Select { get; set; }
         public CellData CodeValue { get; set; }
         public CellData DescriptionValue { get; set; }
@@ -10140,6 +9423,7 @@ namespace WorkbenchApiClient.Swagger {
         public CellData DriverValue { get; set; }
         public CellData ClassValue { get; set; }
         public CellData SerialNoValue { get; set; }
+        public CellData JobStatusValue { get; set; }
         public string Status { get; set; }
         public int ReadonlyFlag { get; set; }
         public string ReadonlyMessage { get; set; }
@@ -10147,11 +9431,6 @@ namespace WorkbenchApiClient.Swagger {
         public PlantPlantItemKey CurrentKey { get; set; }
         public PlantPlantItemKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class PlantPlantItemKey
@@ -10179,15 +9458,11 @@ namespace WorkbenchApiClient.Swagger {
         public LookupsLookupKey CurrentKey { get; set; }
         public LookupsLookupKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class PurchaseOrdersDetailKey
     {
+        public string KeyName { get; set; }
         public int PurchaseOrderLineId { get; set; }
         public int PurchaserId { get; set; }
         public string FinCoCode { get; set; }
@@ -10232,11 +9507,6 @@ namespace WorkbenchApiClient.Swagger {
         public PurchaseOrdersDetailKey CurrentKey { get; set; }
         public PurchaseOrdersDetailKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class PurchaseOrdersKey
@@ -10261,6 +9531,8 @@ namespace WorkbenchApiClient.Swagger {
         public PickerViewData ProfitCentre { get; set; }
         public PickerViewData Supplier { get; set; }
         public PickerViewData Contact { get; set; }
+        public PickerViewData WorkflowType { get; set; }
+        public StringViewData WorkflowStatus { get; set; }
         public StringViewData EnteredBy { get; set; }
         public PickerViewData Purchaser { get; set; }
         public PickerViewData Approver { get; set; }
@@ -10280,16 +9552,35 @@ namespace WorkbenchApiClient.Swagger {
         public DateViewData RevisedDate { get; set; }
         public StringViewData Comments { get; set; }
         public BoolViewData CompletedField { get; set; }
+        public bool IsNew { get; set; }
         public bool Approved { get; set; }
         public bool Completed { get; set; }
         public bool CanApprove { get; set; }
         public bool CanUnapprove { get; set; }
         public ControlButtonsViewData ControlButtons { get; set; }
         public ButtonViewData Import { get; set; }
+        public ButtonViewData WorkflowDetails { get; set; }
+        public string JobCode { get; set; }
+        public string Table { get; set; }
+        public string DiscussionTypeId { get; set; }
+        public string FinancialCompanyCode { get; set; }
+        public bool CanCancel { get; set; }
+        public bool CanUncancel { get; set; }
+        public bool CanSendBack { get; set; }
+        public bool CanAssign { get; set; }
+        public bool CanReview { get; set; }
+        public bool CanSubmit { get; set; }
+        public bool CanComplete { get; set; }
     }
 
     public class ControlButtonsViewData
     {
+        public ButtonViewData Cancel { get; set; }
+        public ButtonViewData Uncancel { get; set; }
+        public ButtonViewData SendBack { get; set; }
+        public ButtonViewData Assign { get; set; }
+        public ButtonViewData Review { get; set; }
+        public ButtonViewData Submit { get; set; }
     }
 
     public class GridResult_PurchaseOrdersListItem
@@ -10314,7 +9605,9 @@ namespace WorkbenchApiClient.Swagger {
         public string Currency { get; set; }
         public string POType { get; set; }
         public double OriginalValue { get; set; }
+        public CellData OriginalCostValue { get; set; }
         public double OutstandingValue { get; set; }
+        public CellData OutstandingCostValue { get; set; }
         public DateTime UpdatedDate { get; set; }
         public string Status { get; set; }
         public int ReadonlyFlag { get; set; }
@@ -10323,11 +9616,6 @@ namespace WorkbenchApiClient.Swagger {
         public PurchaseOrdersKey CurrentKey { get; set; }
         public PurchaseOrdersKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class QuotesQuoteKey
@@ -10391,18 +9679,9 @@ namespace WorkbenchApiClient.Swagger {
     public class PercentageViewData
     {
         public double DecimalValue { get; set; }
-        public double MinValue { get; set; }
-        public double MaxValue { get; set; }
-        public double Step { get; set; }
-        public bool RightAlign { get; set; }
-        public int DecimalPlaces { get; set; }
-        public bool HideSpinner { get; set; }
         public string Name { get; set; }
         public bool Visible { get; set; }
-        public bool Disabled { get; set; }
-        public bool Required { get; set; }
         public bool DisableChange { get; set; }
-        public bool NoDirty { get; set; }
         public ControlSizeValues ControlSize { get; set; }
         public FontStyleValues FontStyle { get; set; }
         public enum ControlSizeValues
@@ -10497,11 +9776,6 @@ namespace WorkbenchApiClient.Swagger {
         public QuotesQuoteKey CurrentKey { get; set; }
         public QuotesQuoteKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class ScaffoldTableDataKey
@@ -10619,57 +9893,6 @@ namespace WorkbenchApiClient.Swagger {
         public CellData Col97 { get; set; }
         public CellData Col98 { get; set; }
         public CellData Col99 { get; set; }
-        public CellData Col100 { get; set; }
-        public CellData Col101 { get; set; }
-        public CellData Col102 { get; set; }
-        public CellData Col103 { get; set; }
-        public CellData Col104 { get; set; }
-        public CellData Col105 { get; set; }
-        public CellData Col106 { get; set; }
-        public CellData Col107 { get; set; }
-        public CellData Col108 { get; set; }
-        public CellData Col109 { get; set; }
-        public CellData Col110 { get; set; }
-        public CellData Col111 { get; set; }
-        public CellData Col112 { get; set; }
-        public CellData Col113 { get; set; }
-        public CellData Col114 { get; set; }
-        public CellData Col115 { get; set; }
-        public CellData Col116 { get; set; }
-        public CellData Col117 { get; set; }
-        public CellData Col118 { get; set; }
-        public CellData Col119 { get; set; }
-        public CellData Col120 { get; set; }
-        public CellData Col121 { get; set; }
-        public CellData Col122 { get; set; }
-        public CellData Col123 { get; set; }
-        public CellData Col124 { get; set; }
-        public CellData Col125 { get; set; }
-        public CellData Col126 { get; set; }
-        public CellData Col127 { get; set; }
-        public CellData Col128 { get; set; }
-        public CellData Col129 { get; set; }
-        public CellData Col130 { get; set; }
-        public CellData Col131 { get; set; }
-        public CellData Col132 { get; set; }
-        public CellData Col133 { get; set; }
-        public CellData Col134 { get; set; }
-        public CellData Col135 { get; set; }
-        public CellData Col136 { get; set; }
-        public CellData Col137 { get; set; }
-        public CellData Col138 { get; set; }
-        public CellData Col139 { get; set; }
-        public CellData Col140 { get; set; }
-        public CellData Col141 { get; set; }
-        public CellData Col142 { get; set; }
-        public CellData Col143 { get; set; }
-        public CellData Col144 { get; set; }
-        public CellData Col145 { get; set; }
-        public CellData Col146 { get; set; }
-        public CellData Col147 { get; set; }
-        public CellData Col148 { get; set; }
-        public CellData Col149 { get; set; }
-        public CellData Col150 { get; set; }
         public CellData Delete { get; set; }
         public string Status { get; set; }
         public int ReadonlyFlag { get; set; }
@@ -10758,8 +9981,6 @@ namespace WorkbenchApiClient.Swagger {
         public string warningMessage { get; set; }
         public string errorMessage { get; set; }
         public List<MvcValidationError> validationErrors { get; set; }
-        public object form { get; set; }
-        public object grid { get; set; }
         public string KeyStr { get; set; }
         public DateTime KeyDate { get; set; }
         public int KeyInt { get; set; }
@@ -10851,11 +10072,6 @@ namespace WorkbenchApiClient.Swagger {
         public SubContractsSubContractWorkOrderKey CurrentKey { get; set; }
         public SubContractsSubContractWorkOrderKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class SubContractsSubContractWorkOrderKey
@@ -10954,11 +10170,6 @@ namespace WorkbenchApiClient.Swagger {
         public SubContractsClaimKey CurrentKey { get; set; }
         public SubContractsClaimKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class SubContractsClaimableLine
@@ -10986,6 +10197,7 @@ namespace WorkbenchApiClient.Swagger {
         public bool Full { get; set; }
         public bool ToDo { get; set; }
         public bool Decline { get; set; }
+        public double CommitRemain { get; set; }
         public double ThisCertificate { get; set; }
         public double UnapprovedQuantity { get; set; }
         public double Unapproved { get; set; }
@@ -11014,6 +10226,7 @@ namespace WorkbenchApiClient.Swagger {
         public CellData ClaimToDateQuantityValue { get; set; }
         public CellData ClaimToDateValue { get; set; }
         public CellData ThisClaimValue { get; set; }
+        public CellData CommitRemainValue { get; set; }
         public CellData ThisCertificateValue { get; set; }
         public CellData CertifiedToDateQuantityValue { get; set; }
         public CellData CertifiedToDateValue { get; set; }
@@ -11036,11 +10249,6 @@ namespace WorkbenchApiClient.Swagger {
         public SubContractsClaimableKey CurrentKey { get; set; }
         public SubContractsClaimableKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class SubContractsClaimKey
@@ -11055,6 +10263,7 @@ namespace WorkbenchApiClient.Swagger {
         public string Type { get; set; }
         public int WorkOrder { get; set; }
         public int PurchaseOrderLineId { get; set; }
+        public bool LineCompleted { get; set; }
     }
 
     public class GridResult_SubContractsSubContractClaimLine
@@ -11092,11 +10301,6 @@ namespace WorkbenchApiClient.Swagger {
         public SubContractsSubContractClaimKey CurrentKey { get; set; }
         public SubContractsSubContractClaimKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class GridResult_SubContractsSubContractLine
@@ -11140,11 +10344,6 @@ namespace WorkbenchApiClient.Swagger {
         public SubContractsSubContractKey CurrentKey { get; set; }
         public SubContractsSubContractKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class SubContractsSubContractKey
@@ -11175,25 +10374,45 @@ namespace WorkbenchApiClient.Swagger {
     {
         public TableApiKey Key { get; set; }
         public string Col01 { get; set; }
-        public string Col02 { get; set; }
-        public string Col03 { get; set; }
-        public string Col04 { get; set; }
-        public string Col05 { get; set; }
-        public string Col06 { get; set; }
-        public string Col07 { get; set; }
-        public string Col08 { get; set; }
-        public string Col09 { get; set; }
-        public string Col10 { get; set; }
         public string Tag01 { get; set; }
+        public string Col02 { get; set; }
         public string Tag02 { get; set; }
+        public string Col03 { get; set; }
         public string Tag03 { get; set; }
+        public string Col04 { get; set; }
         public string Tag04 { get; set; }
+        public string Col05 { get; set; }
         public string Tag05 { get; set; }
+        public string Col06 { get; set; }
         public string Tag06 { get; set; }
+        public string Col07 { get; set; }
         public string Tag07 { get; set; }
+        public string Col08 { get; set; }
         public string Tag08 { get; set; }
+        public string Col09 { get; set; }
         public string Tag09 { get; set; }
+        public string Col10 { get; set; }
         public string Tag10 { get; set; }
+        public string Col11 { get; set; }
+        public string Tag11 { get; set; }
+        public string Col12 { get; set; }
+        public string Tag12 { get; set; }
+        public string Col13 { get; set; }
+        public string Tag13 { get; set; }
+        public string Col14 { get; set; }
+        public string Tag14 { get; set; }
+        public string Col15 { get; set; }
+        public string Tag15 { get; set; }
+        public string Col16 { get; set; }
+        public string Tag16 { get; set; }
+        public string Col17 { get; set; }
+        public string Tag17 { get; set; }
+        public string Col18 { get; set; }
+        public string Tag18 { get; set; }
+        public string Col19 { get; set; }
+        public string Tag19 { get; set; }
+        public string Col20 { get; set; }
+        public string Tag20 { get; set; }
     }
 
     public class TableApiKey
@@ -11217,6 +10436,16 @@ namespace WorkbenchApiClient.Swagger {
         public string Col08 { get; set; }
         public string Col09 { get; set; }
         public string Col10 { get; set; }
+        public string Col11 { get; set; }
+        public string Col12 { get; set; }
+        public string Col13 { get; set; }
+        public string Col14 { get; set; }
+        public string Col15 { get; set; }
+        public string Col16 { get; set; }
+        public string Col17 { get; set; }
+        public string Col18 { get; set; }
+        public string Col19 { get; set; }
+        public string Col20 { get; set; }
     }
 
     public class GridResult_TimesheetsAttendanceLine
@@ -11246,11 +10475,6 @@ namespace WorkbenchApiClient.Swagger {
         public TimesheetsAttendanceKey CurrentKey { get; set; }
         public TimesheetsAttendanceKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class TimesheetsAttendanceKey
@@ -11382,9 +10606,12 @@ namespace WorkbenchApiClient.Swagger {
             SubcontractClaimWorkflowApproval,
             BulkInvoice,
             WorkOrder,
+            DocumentRegister,
             Activities,
             SalesCodes,
             ContractorDaysheet,
+            Materials,
+            ExternalPlant,
         }
 
     }
@@ -11465,93 +10692,12 @@ namespace WorkbenchApiClient.Swagger {
         public TimesheetsDetailKey CurrentKey { get; set; }
         public TimesheetsDetailKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class TimesheetsKey
     {
         public int PersonId { get; set; }
         public DateTime TimesheetDate { get; set; }
-        public FunctionalCodeValues FunctionalCode { get; set; }
-        public enum FunctionalCodeValues
-        {
-            General,
-            PurchaseOrders,
-            PurchaseOrderApproval,
-            PurchaseRequisitions,
-            Timesheets,
-            TimesheetReviews,
-            TimesheetApproval,
-            TimesheetApprovalList,
-            ServiceLog,
-            ServiceDesk,
-            ExpenseClaims,
-            ExpenseClaimReviews,
-            ExpenseClaimApproval,
-            ExpenseClaimAdminApproval,
-            TabletTimesheet,
-            TabletTimePlant,
-            Scheduler,
-            LeaveManagement,
-            LeaveTypeManagement,
-            CrewTimesheets,
-            Refueling,
-            HumanResources,
-            DailyDiary,
-            Datasheets,
-            CreditCards,
-            Stock,
-            LogDaysheet,
-            PortalPeople,
-            PortalCompany,
-            Workflow,
-            Reporting,
-            ProfitCentres,
-            ExternalSalesCodes,
-            InternalSalesCodes,
-            ActivityReportCode,
-            ProfitCentreReportCode,
-            SalesCodeReportCode,
-            Batch,
-            Budget,
-            Billing,
-            TimeCodes,
-            Disbursement,
-            Jobs,
-            ApInvoices,
-            Adjustments,
-            Plant,
-            NonStockLocation,
-            JobContract,
-            Processes,
-            JobReceipt,
-            Forecast,
-            SubContracts,
-            WorkOrderApproval,
-            StockItem,
-            ApInvoiceApproval,
-            ApCreditApproval,
-            TimesheetAdminApproval,
-            DocketEntry,
-            Revenue,
-            Vouchers,
-            VoucherApproval,
-            Quotes,
-            ProductionMeasures,
-            StockIssue,
-            Utilities,
-            SubcontractClaimWorkflowApproval,
-            BulkInvoice,
-            WorkOrder,
-            Activities,
-            SalesCodes,
-            ContractorDaysheet,
-        }
-
     }
 
     public class GridResult_TimesheetsListItem
@@ -11580,11 +10726,6 @@ namespace WorkbenchApiClient.Swagger {
         public TimesheetsKey CurrentKey { get; set; }
         public TimesheetsKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class UploadedFileApiModel
@@ -11677,11 +10818,6 @@ namespace WorkbenchApiClient.Swagger {
         public AdminWorkCentreKey CurrentKey { get; set; }
         public AdminWorkCentreKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
     public class AdminWorkCentreKey
@@ -11708,11 +10844,6 @@ namespace WorkbenchApiClient.Swagger {
         public LookupsLookupKey CurrentKey { get; set; }
         public LookupsLookupKey Key { get; set; }
         public int Index { get; set; }
-        public CellData Extra1 { get; set; }
-        public CellData Extra2 { get; set; }
-        public CellData Extra3 { get; set; }
-        public CellData Extra4 { get; set; }
-        public CellData Extra5 { get; set; }
     }
 
 }
