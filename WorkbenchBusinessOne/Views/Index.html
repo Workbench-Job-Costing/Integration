@@ -1,0 +1,283 @@
+﻿@Master['Master']
+
+@Section['Content']
+<script type="text/javascript">
+    function echoTest() {
+
+        $.ajax({
+            method: "POST",
+            url: window.location.pathname + "/Echo",
+            data: { message: "Hello! date: " + new Date() },
+            success: function (result) {
+                alert(result.message);
+            },
+            error: function (er) {
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+            }
+        });
+    }
+
+    
+    function syncCompanies() {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncCompanies",
+            data: {},
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+
+    function syncPayments() {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncPayments",
+            data: {},
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+
+    function syncJobReceipts() {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncJobReceipts",
+            data: {},
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+
+        function syncExchangeRates() {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncExchangeRates",
+            data: {},
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+    
+
+    function syncAPInvoices() {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncInvoices",
+            data: {},
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+
+    function syncJobs() {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncJobs",
+            data: {},
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+
+    function syncGLJournals(control) {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncGLJournals",
+            data: {batchNo: $("#" + control).val()},
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }   
+    
+    function syncAPInvoices(control) {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncAPInvoices",
+            data: {batchNo: $("#" + control).val()}, 
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+
+        function syncARInvoices(control) {
+        $(".btn").attr('disabled', true);
+        $(".ui-loader-background").show();
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/SyncARInvoices",
+            data: {batchNo: $("#" + control).val()}, 
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                $(".ui-loader-background").hide();
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on import, check console for more details.");
+                $(".ui-loader-background").hide();
+            }
+        });
+    }
+
+    function updateTime(control) {
+        $(".btn").attr('disabled', true);
+        $.ajax({
+            method: "POST",
+            url: window.location.origin + "/UpdateTime",
+            data: { type: control, val: $("#" + control).val() },
+            success: function (result) {
+                $(".btn").attr('disabled', null);
+                alert(result.message);
+            },
+            error: function (er) {
+                $(".btn").attr('disabled', null);
+                console.log(er)
+                alert("There was an error on update, check console for more details.");
+            }
+        });
+    }
+</script>
+<h3>Import from SAP B1 to Workbench</h3>
+<p>Trigger import functions manually.</p>
+<hr>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync Companies:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncCompanies()">Sync</button></div>
+    <div class="col-xs-3"><input id="LastCompanieSyncDate" type="datetime-local" title="Last sync date" class="form-control" value='@Model.LastCompanieSyncDate' /></div>
+    <div class="col-xs-2"><button class="btn" onclick="updateTime('LastCompanieSyncDate')">Update</button></div>
+    <div class="spinner-border"></div>
+</div>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync Payments:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncPayments()">Sync</button></div>
+    <div class="col-xs-3"><input id="LastPaymentSyncDate" type="datetime-local" title="Last sync date" class="form-control" value='@Model.LastPaymentSyncDate' /></div>
+    <div class="col-xs-2"><button class="btn" onclick="updateTime('LastPaymentSyncDate')">Update</button></div>
+</div>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync Job Receipts:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncJobReceipts()">Sync</button></div>
+    <div class="col-xs-3"><input id="LastJobReceiptsSyncDate" type="datetime-local" title="Last sync date" class="form-control" value='@Model.LastJobReceiptsSyncDate' /></div>
+    <div class="col-xs-2"><button class="btn" onclick="updateTime('LastJobReceiptsSyncDate')">Update</button></div>
+</div>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync Exhange Rates:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncExchangeRates()">Sync</button></div>    <div class="spinner-border"></div>
+</div>
+<h3>Export from Workbench to SAP B1</h3>
+<p>Trigger export functions manually.</p>
+<hr>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync Jobs:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncJobs()">Sync</button></div>
+    <div class="col-xs-3"><input id="LastJobSyncDate" type="datetime-local" title="Last Sync date" class="form-control" value='@Model.LastJobSyncDate' /></div>
+    <div class="col-xs-2"><button class="btn" onclick="updateTime('LastJobSyncDate')">Update</button></div>
+</div>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync GL Journals:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncGLJournals()">Sync</button></div>
+    <div class="col-xs-3"><input id="GLJournalBatchNo" type="text" title="GL Journal BatchNo" class="form-control" value="2174019"/></div> 
+    <div class="col-xs-3"><input id="LastGLJournalsSyncDate" type="datetime-local" title="Last Sync date" class="form-control" value='@Model.LastGLJournalsSyncDate' /></div>
+</div>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync AP Invoices:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncAPInvoices('APInvoiceBatchNo')">Sync</button></div>
+    <div class="col-xs-3"><input id="APInvoiceBatchNo" type="text" title="APInvoice BatchNo" class="form-control" value="1192028"/></div> 
+    <div class="col-xs-3"><input id="LastAPInvoicesSyncDate" type="datetime-local" title="Last Sync date" class="form-control" value='@Model.LastAPInvoicesSyncDate' /></div>
+</div>
+<div class="row mb-15">
+    <div class="col-xs-3">Sync AR Invoices:</div>
+    <div class="col-xs-2"><button class="btn" onclick="syncARInvoices('ARInvoiceBatchNo')">Sync</button></div>
+    <div class="col-xs-3"><input id="ARInvoiceBatchNo" type="text" title="ARInvoice BatchNo" class="form-control" value="1192028"/></div> 
+    <div class="col-xs-3"><input id="LastARInvoicesSyncDate" type="datetime-local" title="Last Sync date" class="form-control" value='@Model.LastARInvoicesSyncDate' /></div>
+</div>
+@EndSection

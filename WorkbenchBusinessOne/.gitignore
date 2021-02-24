@@ -328,13 +328,3 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-/WorkbenchBusinessOne/Workbench.Agent.BusinessOne.Service/Package
-/WorkbenchBusinessOne/App.config
-/WorkbenchBusinessOne/IntegrationSettings.json
-/WorkbenchBusinessOne/Workbench.Agent.BusinessOne.Service/IntegrationSettings.json
-/WorkbenchBusinessOne/Workbench.Agent.BusinessOne.Service/App.config
-/WorkbenchBusinessOne/Properties/Settings.Designer.cs
-/WorkbenchBusinessOne/Properties/Settings.settings
-/WorkbenchBusinessOne/Reference/SAPBusinessOneSDK.dll
-/WorkbenchBusinessOne/Workbench.Agent.BusinessOne.Service/Properties/Settings.settings
-/WorkbenchBusinessOne/Workbench.Agent.BusinessOne.Service/Properties/Settings.Designer.cs
