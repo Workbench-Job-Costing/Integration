@@ -24,7 +24,8 @@ namespace Workbench.Agent.BusinessOne.HubClients
             ExportJobs exportJobs,
             ExportGLJournals exportGLJournals,
             ExportAPInvoices exportAPInvoices,
-            ExportARInvoices exportARInvoices)
+            ExportARInvoices exportARInvoices,
+            ExportPayrollTimesheets exportPayrollTimesheets)
         {
             timer = new System.Timers.Timer(1000 * 60 * 20); 
             timer.Enabled = true;
@@ -44,7 +45,7 @@ namespace Workbench.Agent.BusinessOne.HubClients
                     exportHub.On<string>("export", (message) =>
                     {
 
-                        var exportProcessBatch = new ExportProcessBatch(exportJobs, exportGLJournals, exportAPInvoices, exportARInvoices);                        
+                        var exportProcessBatch = new ExportProcessBatch(exportJobs, exportGLJournals, exportAPInvoices, exportARInvoices, exportPayrollTimesheets);                        
 
                         if(message !="Ping")
                         {

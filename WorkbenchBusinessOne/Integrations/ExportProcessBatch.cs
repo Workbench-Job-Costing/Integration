@@ -11,6 +11,7 @@ namespace Workbench.Agent.BusinessOne.Integrations
         private readonly ExportGLJournals exportGLJournals;
         private readonly ExportAPInvoices exportAPInvoices;
         private readonly ExportARInvoices exportARInvoices;
+        private readonly ExportPayrollTimesheets exportPayrollTimesheets;
 
         private string[] batches;
         private string type;
@@ -19,12 +20,14 @@ namespace Workbench.Agent.BusinessOne.Integrations
         public ExportProcessBatch(ExportJobs exportJobs, 
             ExportGLJournals exportGLJournals,
             ExportAPInvoices exportAPInvoices,
-            ExportARInvoices exportARInvoices)
+            ExportARInvoices exportARInvoices,
+            ExportPayrollTimesheets exportPayrollTimesheets)
         {
             this.exportJobs = exportJobs;
             this.exportGLJournals = exportGLJournals;
             this.exportAPInvoices = exportAPInvoices;
             this.exportARInvoices = exportARInvoices;
+            this.exportPayrollTimesheets = exportPayrollTimesheets;
         }
         public string ProcessBatch(string message)
         {
@@ -75,6 +78,11 @@ namespace Workbench.Agent.BusinessOne.Integrations
                     if (type == "StockReturn" || type == "StockIssue" || type == "StockTrf" || type == "StockAdjust")
                     {
                         result = exportGLJournals.Export(batchNo, sessionId);
+                    }
+
+                    if (type == "Payroll")
+                    {
+                        result = exportPayrollTimesheets.Export(batchNo, sessionId);
                     }
 
                     if(result == "")
@@ -134,6 +142,12 @@ namespace Workbench.Agent.BusinessOne.Integrations
                     if (type == "StockReturn" || type == "StockIssue" || type == "StockTrf" || type == "StockAdjust")
                     {
                         exportTable = "GLJournals";
+                        _ = wbTrfClient.LogTrfApi_Post2Async(batchNo, batchNo, exportTable, Type2.Error, $"Error exporting batch {ex.Message}").Result;
+                    }
+
+                    if (type == "Payroll")
+                    {
+                        exportTable = "PayrollTimesheets";
                         _ = wbTrfClient.LogTrfApi_Post2Async(batchNo, batchNo, exportTable, Type2.Error, $"Error exporting batch {ex.Message}").Result;
                     }
                 }

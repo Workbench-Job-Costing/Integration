@@ -90,7 +90,8 @@ namespace Workbench.Agent.BusinessOne
                     return new ExportClient(new ExportJobs(client, company, wbtrfClient),
                        new ExportGLJournals(client, company, wbtrfClient),
                        new ExportAPInvoices(client, company, wbtrfClient),
-                       new ExportARInvoices(client, company, wbtrfClient));
+                       new ExportARInvoices(client, company, wbtrfClient),
+                       new ExportPayrollTimesheets(client, company, wbtrfClient));
                 });
 
                 container.Register((c, p) =>
@@ -98,7 +99,8 @@ namespace Workbench.Agent.BusinessOne
                     return new ExportProcessBatch(new ExportJobs(client, company, wbtrfClient),
                        new ExportGLJournals(client, company, wbtrfClient),
                        new ExportAPInvoices(client, company, wbtrfClient),
-                       new ExportARInvoices(client, company, wbtrfClient));
+                       new ExportARInvoices(client, company, wbtrfClient),
+                       new ExportPayrollTimesheets(client, company, wbtrfClient));
                 });
 
                 container.Register((c, p) =>
