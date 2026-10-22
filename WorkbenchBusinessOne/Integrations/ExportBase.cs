@@ -77,6 +77,19 @@ namespace Workbench.Agent.BusinessOne.Integrations
             return !recordset.RecordCount.Equals(0);
         }
 
+        public bool EmployeeExists(string employeeNo)
+        {
+            return GetEmployeeId(employeeNo) != 0;
+        }
+
+        public int GetEmployeeId(string employeeNo)
+        {
+            var recordset = (Recordset)sapCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
+            recordset.DoQuery($"select top 1 empID from OHEM where ExtEmpNo = '{employeeNo.Replace("'", "''")}'");
+
+            return recordset.RecordCount.Equals(0) ? 0 : Convert.ToInt32(recordset.Fields.Item("empID").Value);
+        }
+
         public bool CompanyExists(string companyCode)
         {
             var recordset = (Recordset)sapCompany.GetBusinessObject(BoObjectTypes.BoRecordset);

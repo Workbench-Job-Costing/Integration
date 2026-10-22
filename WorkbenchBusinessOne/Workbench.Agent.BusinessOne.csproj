@@ -78,6 +78,7 @@
     <Compile Include="Integrations\ExportBase.cs" />
     <Compile Include="Integrations\ExportAPInvoices.cs" />
     <Compile Include="Integrations\ExportGLJournals.cs" />
+    <Compile Include="Integrations\ExportPayrollTimesheets.cs" />
     <Compile Include="Integrations\ExportProcessBatch.cs" />
     <Compile Include="Integrations\ImportBase.cs" />
     <Compile Include="Integrations\ExportJobs.cs" />
